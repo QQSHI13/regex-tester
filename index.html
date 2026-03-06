@@ -349,6 +349,10 @@ URL: https://github.com/QQSHI13</textarea>
                         index: match.index,
                         groups: match.slice(1)
                     });
+                    // Prevent infinite loop on zero-width matches (e.g., a*, \b, (?=a))
+                    if (match[0].length === 0) {
+                        globalRegex.lastIndex++;
+                    }
                     if (!flags.includes('g')) break;
                 }
 
@@ -414,7 +418,7 @@ URL: https://github.com/QQSHI13</textarea>
         function copyRegex() {
             const text = `/${regexInput.value}/${flagsInput.value}`;
             navigator.clipboard.writeText(text);
-            const btn = document.querySelector('button');
+            const btn = document.querySelector('button[onclick="copyRegex()"]');
             const original = btn.textContent;
             btn.textContent = 'Copied!';
             setTimeout(() => btn.textContent = original, 1500);
